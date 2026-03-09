@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Super Clicker Game</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #00FF00;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        #game-container {
+            position: relative;
+            width: 80vw;
+            height: 70vh;
+            border: 2px solid #333;
+            background-color: #000;
+            cursor: crosshair;
+        }
+        #target {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: red;
+            border-radius: 50%;
+            display: none;
+        }
+        .stats {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        #start-btn {
+            padding: 15px 30px;
+            font-size: 20px;
+            background: #00FF00;
+            color: #000;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="stats">Счет: <span id="score">0</span> | Время: <span id="time">30</span>с</div>
+    
+    <div id="game-container">
+        <button id="start-btn">НАЧАТЬ ИГРУ</button>
+        <div id="target"></div>
+    </div>
+
+    <script>
+        let score = 0;
+        let timeLeft = 30;
+        let gameActive = false;
+        const scoreEl = document.getElementById('score');
+        const timeEl = document.getElementById('time');
+        const target = document.getElementById('target');
+        const startBtn = document.getElementById('start-btn');
+        const container = document.getElementById('game-container');
+
+        function moveTarget() {
+            const maxX = container.clientWidth - 50;
+            const maxY = container.clientHeight - 50;
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY);
+            
+            target.style.left = randomX + 'px';
+            target.style.top = randomY + 'px';
+        }
+
+        function startGame() {
+            score = 0;
+            timeLeft = 30;
+            gameActive = true;
+            scoreEl.innerText = score;
+            timeEl.innerText = timeLeft;
+            startBtn.style.display = 'none';
+            target.style.display = 'block';
+            moveTarget();
+
+            const timer = setInterval(() => {
+                timeLeft--;
+                timeEl.innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function endGame() {
+            gameActive = false;
+            target.style.display = 'none';
+            startBtn.style.display = 'block';
+            startBtn.innerText = "ПОПРОБОВАТЬ СНОВА";
+            alert("Твой счет: " + score);
+        }
+
+        target.addEventListener('mousedown', () => {
+            if (gameActive) {
+                score++;
+                scoreEl.innerText = score;
+                moveTarget();
+            }
+        });
+
+        startBtn.addEventListener('click', startGame);
+    </script>
+</body>
+</html>
